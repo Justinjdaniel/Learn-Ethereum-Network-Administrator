@@ -47,3 +47,15 @@ These clients encompass a range of essential components, including:
 4. APIs for Application Developers: Ethereum clients provide APIs for developers to interact with the blockchain, enabling decentralized app development, blockchain data querying, and transaction submission.
 
 An Ethereum client is the software backbone of the Ethereum blockchain, enabling machines to connect, execute transactions, store data, and support decentralized application development.
+
+
+### Hyperledger Besu
+
+Hyperledger Besu is an Ethereum client under Hyperledger Foundation’s projects. It serves as a collaborative platform for open-source blockchain projects and associated tools, aiming to advance the application and understanding of blockchain across different sectors.
+
+Besu not only serves public Ethereum networks as an Execution client but is also tailored to fit private permissioned ones. Its unique feature is its adaptable EVM (Ethereum Virtual Machine) implementation
+
+Hyperledger Besu offers compatibility with 
+1. **Proof of Work (PoW)** 
+2. **Proof of Authority (PoA)**,This includes IBFT 2.0 (Istanbul BFT), QBFT (Quorum Byzantine Fault Tolerance), and Clique varients. PoA algorithms rely on a selected group of approved validators who take turns creating blocks and securing the network. This approach ensures high transaction throughput, low latency, and efficient network governance, making it well-suited for consortium-based blockchain networks.
+3. Hyperledger Besu offers comprehensive permissioning schemes designed explicitly for use in consortium environments. These permissioning mechanisms allow organizations to control access, define roles and responsibilities, and establish governance rules within the network. Hyperledger Besu facilitates secure collaboration and fosters trust among consortium members by providing granular control over participants’ actions and data visibility. Now that we’ve covered the theoretical aspects let’s explore the practical side of creating customized Ethereum networks.
