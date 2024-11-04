@@ -1,6 +1,10 @@
 # Learn-Ethereum-Network-Administrator
->[!NOTE]
-> This is a note taken during the exploration of **Ethereum Network Administrator [ENA]**
+
+> [!TIP]
+> Offical Besu [documentation](https://besu.hyperledger.org/) 
+
+> [!NOTE]
+> This is a note taken during the exploration of **Ethereum Network Administrator [ENA]** (self paced learning).
 
 ## Need for Building Customizable Ethereum Networks
 Private Ethereum networks, or customizable Ethereum networks, have various uses in the blockchain ecosystem:
@@ -51,6 +55,9 @@ An Ethereum client is the software backbone of the Ethereum blockchain, enabling
 
 ### Hyperledger Besu
 
+> [!NOTE]
+> For more information visit offical [wiki](https://lf-hyperledger.atlassian.net/wiki/spaces/BESU/overview).
+
 Hyperledger Besu is an Ethereum client under Hyperledger Foundation’s projects. It serves as a collaborative platform for open-source blockchain projects and associated tools, aiming to advance the application and understanding of blockchain across different sectors.
 
 Besu not only serves public Ethereum networks as an Execution client but is also tailored to fit private permissioned ones. Its unique feature is its adaptable EVM (Ethereum Virtual Machine) implementation
@@ -58,15 +65,82 @@ Besu not only serves public Ethereum networks as an Execution client but is also
 Hyperledger Besu offers compatibility with 
 1. **Proof of Work (PoW)** 
 2. **Proof of Authority (PoA)**,This includes IBFT 2.0 (Istanbul BFT), QBFT (Quorum Byzantine Fault Tolerance), and Clique varients. PoA algorithms rely on a selected group of approved validators who take turns creating blocks and securing the network. This approach ensures high transaction throughput, low latency, and efficient network governance, making it well-suited for consortium-based blockchain networks.
-3. Hyperledger Besu offers comprehensive permissioning schemes designed explicitly for use in consortium environments. These permissioning mechanisms allow organizations to control access, define roles and responsibilities, and establish governance rules within the network. Hyperledger Besu facilitates secure collaboration and fosters trust among consortium members by providing granular control over participants’ actions and data visibility. Now that we’ve covered the theoretical aspects let’s explore the practical side of creating customized Ethereum networks.
+3. **Proof of Stake**: Alongside a consensus client, Besu can be used to connect to and participate in Ethereum Mainnet proof-of-stake. 
+4. Hyperledger Besu offers comprehensive permissioning schemes designed explicitly for use in consortium environments. These permissioning mechanisms allow organizations to control access, define roles and responsibilities, and establish governance rules within the network. Hyperledger Besu facilitates secure collaboration and fosters trust among consortium members by providing granular control over participants’ actions and data visibility. Now that we’ve covered the theoretical aspects let’s explore the practical side of creating customized Ethereum networks.
 
-## Setting Up Single Node Private Network
+## Installing Hyperledger Besu
+
+To install Hyperledger Besu, ensure your system has Java installed since Besu is Java-based. This tutorial is tailored for Ubuntu systems.
+
+1. ### Install Java:
+
+    ```sh
+    sudo apt update
+    sudo apt install openjdk-21-jdk
+    ```
+
+2. ### Verify the installation:
+
+    ```sh
+    java --version
+    ```
+
+3. ### Download Hyperledger Besu:
+    Visit [Hyperledger Besu Releases](https://github.com/hyperledger/besu/releases) and download the latest version. For this guide, we'll use Hyperledger Besu 23.4.4.
+
+4. ### Set Up Besu:
+
+    Create a folder named besu and navigate into it:
+
+    ```sh
+    mkdir besu
+    cd besu
+    ```
+
+    Extract the downloaded ZIP file into the besu folder. Then, verify the Besu version:
+
+    ```sh
+    ./bin/besu --version
+    ```
+5. ### Set Environment Variable:
+
+    To access Besu globally, set the environment variable. Copy the path to the bin folder, then open the environment file:
+
+    ```sh
+    sudo nano /etc/environment
+    ```
+    Append the copied path at the end of the current data, separating values with a colon `:`.
+
+    Use `Ctrl+O` to save and `Ctrl+X` to exit the editor.
+
+6. ### Apply Changes:
+
+    Restart the system to reflect the updates. Verify the changes with:
+
+    ```sh
+    besu
+    ```
+
+
+## Setting Up Single Node Private Ethereum Network
+
+> [!TIP]
+> Check out the offical tutorials [Private Network QuickStart](https://besu.hyperledger.org/stable/private-networks/tutorials/quickstart)
 
 > [!NOTE]  
 > ### Ethash Consensus Algorithm: 
 > Ethash was Ethereum's proof-of-work mining algorithm. For more details visit this [link](https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/mining/mining-algorithms/ethash/).
 
-1. Make sure perquisite are meet. 
+1. Make sure perquisite are meet and installed Hyperledger Besu.
+    ```sh
+    besu --version
+    ```
+    Create a New Folder: (optional)
+    ```sh
+    mkdir PrivateNetwork
+    cdPrivateNetwork
+    ```
+    
 2. Create a configuration file. 
 3. Start the Node.
 4. Interaction with the Node using JSON-RPC calls or command-line interfaces to send transactions, deploy smart contracts, or request blockchain data.
