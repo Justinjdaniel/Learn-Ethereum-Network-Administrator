@@ -59,3 +59,15 @@ Hyperledger Besu offers compatibility with
 1. **Proof of Work (PoW)** 
 2. **Proof of Authority (PoA)**,This includes IBFT 2.0 (Istanbul BFT), QBFT (Quorum Byzantine Fault Tolerance), and Clique varients. PoA algorithms rely on a selected group of approved validators who take turns creating blocks and securing the network. This approach ensures high transaction throughput, low latency, and efficient network governance, making it well-suited for consortium-based blockchain networks.
 3. Hyperledger Besu offers comprehensive permissioning schemes designed explicitly for use in consortium environments. These permissioning mechanisms allow organizations to control access, define roles and responsibilities, and establish governance rules within the network. Hyperledger Besu facilitates secure collaboration and fosters trust among consortium members by providing granular control over participants’ actions and data visibility. Now that we’ve covered the theoretical aspects let’s explore the practical side of creating customized Ethereum networks.
+
+## Setting Up Single Node Private Network
+
+> [!NOTE]  
+> ### Ethash Consensus Algorithm: 
+> Ethash was Ethereum's proof-of-work mining algorithm. For more details visit this [link](https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/mining/mining-algorithms/ethash/).
+
+1. Make sure perquisite are meet. 
+2. Create a configuration file. 
+3. Start the Node.
+4. Interaction with the Node using JSON-RPC calls or command-line interfaces to send transactions, deploy smart contracts, or request blockchain data.
+
