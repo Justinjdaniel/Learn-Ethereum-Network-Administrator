@@ -145,3 +145,165 @@ To install Hyperledger Besu, ensure your system has Java installed since Besu is
 3. Start the Node.
 4. Interaction with the Node using JSON-RPC calls or command-line interfaces to send transactions, deploy smart contracts, or request blockchain data.
 
+## Genesis Block Configuration
+
+The genesis block is the foundational starting point of any blockchain, ensuring the integrity and continuity of the entire system. It’s hardcoded into network nodes, making it a critical point of trust. Each block contains the hash of its predecessor, so tampering with the genesis block invalidates the entire blockchain.
+
+## Besu Genesis Block Configuration
+
+By default, Besu creates the mainnet’s genesis block. For a private network, a distinct genesis block is required. Below is the configuration for a Proof of Work-based network.
+
+### Steps to Create Genesis File
+
+1. Create a file named `genesis.json` in the `PrivateNetwork` folder.
+2. Copy the content below and replace the highlighted section with your account address.
+
+```json
+{
+  "config": {
+    "berlinBlock": 0,
+    "ethash": {
+      "fixeddifficulty": 1000
+    },
+    "chainID": "1100001"
+  },
+  "gasLimit": "0x1000000",
+  "difficulty": "0x10000",
+  "contractSizeLimit": "24576",
+  "alloc": {
+    "pasteYourAccountAddressHere": {
+      "balance": "90000000000000000000000"
+    }
+  }
+}
+```
+### Key Configuration Parameters
+make the content shorter
+Sure! Here’s a more concise version of the content:
+
+markdown
+## Genesis Block Configuration
+
+The genesis block is the foundational starting point of any blockchain, ensuring the integrity and continuity of the entire system. It’s hardcoded into network nodes, making it a critical point of trust. Each block contains the hash of its predecessor, so tampering with the genesis block invalidates the entire blockchain.
+
+### Besu Genesis Block Configuration
+
+By default, Besu creates the mainnet’s genesis block. For a private network, a distinct genesis block is required. Below is the configuration for a Proof of Work-based network.
+
+#### Steps to Create Genesis File
+
+1. Create a file named `genesis.json` in the `PrivateNetwork` folder.
+2. Copy the content below and replace the highlighted section with your account address.
+
+```json
+{
+  "config": {
+    "berlinBlock": 0,
+    "ethash": {
+      "fixeddifficulty": 1000
+    },
+    "chainID": "1100001"
+  },
+  "gasLimit": "0x1000000",
+  "difficulty": "0x10000",
+  "contractSizeLimit": "24576",
+  "alloc": {
+    "pasteYourAccountAddressHere": {
+      "balance": "90000000000000000000000"
+    }
+  }
+}
+```
+
+#### Key Configuration Parameters
+
+ - **berlinBlock:**
+In Besu private networks, the `berlinBlock` parameter marks Ethereum protocol changes. Setting it to `0` ensures the network uses the latest Ethereum protocol from its genesis block.
+
+ - **chainID:**
+Ethereum uses two identifiers: a network ID for peer-to-peer communication, and a chain ID for transaction signing. These IDs should be numerical and not start with zero to avoid errors.
+
+ - **gasLimit:**
+Sets the maximum gas cost per block, dictating the extent of EVM computation permissible within a single block.
+
+ - **ethash:**
+Indicates the Proof of Work algorithm. The `fixeddifficulty` field maintains constant network difficulty for testing environments. For production networks, it's recommended to set a low difficulty in the genesis file for Ethash to adjust based on hashrate.
+
+ - **alloc:**
+Specifies addresses and their initial balances in wei. Include an address you can access with a private key, such as one from MetaMask.
+
+
+> [!NOTE] 
+> Besu doesn’t support private key management. So make use of a familiar wallet like MetaMask.
+
+## Running a Private Node
+
+To run a private node, use the following command:
+
+```sh
+besu  --identity=”NodeA” --network-id 1000001 --data-path=Node1/data --genesis-file=./genesis.json --rpc-http-enabled --rpc-http-host="0.0.0.0" --rpc-http-port "8545" --rpc-http-api=ADMIN,ETH,NET,MINER,WEB3 --host-allowlist="*" --rpc-http-cors-origins="all" --miner-enabled --miner-coinbase="pasteYourAccountAddressHere"
+```
+
+### Command Parameters
+ - **identity:** Name of the node, e.g., NodeA.
+ - **network-id:** Numeric identifier for the network (e.g., 1000001).
+ - **data-path:** Directory for storing blockchain data.
+ - **rpc-http-enabled:** Enables RPC communication.
+ - **rpc-http-port:** Default port 8545.
+ - **host-allowlist:** Accepts a comma-separated list of hostnames, * for any host.
+ - **rpc-http-cors-origins:** Accepts cross-origin requests, all for all origins.
+ - **rpc-http-api:** Lists APIs accessible through RPC (e.g., ADMIN, ETH, NET, MINER, WEB3).
+ - **miner-coinbase:** Account for mining rewards, replace with your account address.
+ - **miner-enabled:** Activates mining on the node.
+
+Execute the command to start the node. The node will begin mining and its status will be displayed in the console.
+
+> [!NOTE]
+> Mining is resource-intensive and may cause high CPU utilization. Ensure your system has adequate resources to avoid performance issues.
+
+## Ethereum Node Functionality Testing
+
+### Testing the Ethereum Node
+
+To test our Ethereum node, we will deploy a simple storage smart contract. 
+
+#### Smart Contract (MessageContract.sol)
+
+```solidity
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity 0.8.21;
+
+contract MessageContract {
+    string message;
+
+    function getMessage() public view returns (string memory) {
+        return message;
+    }
+
+    function setMessage(string memory _message) public {
+        message = _message;
+    }
+}
+```
+
+This contract allows storing and retrieving a string value with two functions: setMessage to store the value, and getMessage to retrieve it.
+
+#### Deploying the Contract
+
+1. Open Remix IDE.
+2. Create and Compile Contract:
+    - Create a file MessageContract.sol and copy the above code.
+    - Compile the contract.
+3. Connect MetaMask:
+    - Use the Injected Provider – MetaMask option in the Environment dropdown under the Deploy & Run Transactions tab.
+4. Configure MetaMask to connect to our private network:
+    - Network name: Test Network (any name)
+    - New RPC URL: http://127.0.0.1:8545 (from node console)
+    - Chain ID: 1100001 (from genesis file)
+    - Currency symbol: TETH (any symbol)
+
+Finally, load your address, deploy the contract to our network, and test it. Refer to the accompanying [video](https://youtu.be/7fWQzc_eFYo) for guidance.
+
+
+> [!NOTE] 
+> This is just an overview, and you should refer to our course materials for more detailed instructions.
