@@ -1,0 +1,27 @@
+{
+  "github.copilot.chat.codeGeneration.instructions": [
+    { "file": "content.instruction.md" },
+    { "file": "commit.instruction.md" }
+  ],
+  "cSpell.words": [
+    "Besu",
+    "bootnode",
+    "bootnodes",
+    "Dockerfiles",
+    "enode",
+    "Erigon",
+    "Ethash",
+    "ethstats",
+    "ethstatus",
+    "fixeddifficulty",
+    "hashrate",
+    "hostnames",
+    "Hyperledger",
+    "Nethermind",
+    "nodename",
+    "PBSU",
+    "permissioned",
+    "permissioning",
+    "TXPOOL"
+  ]
+}

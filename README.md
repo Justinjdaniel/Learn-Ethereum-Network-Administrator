@@ -1,4 +1,4 @@
-# Learn Ethereum Network Administration
+# ENA Notes
 
 > [!TIP]
 > Official Besu [documentation](https://besu.hyperledger.org/)
@@ -169,9 +169,8 @@ To install Hyperledger Besu, ensure your system has Java installed since Besu is
 > Check out the official tutorials [Private Network QuickStart](https://besu.hyperledger.org/stable/private-networks/tutorials/quickstart)
 
 > [!NOTE]
->Ethash Consensus Algorithm
+> Ethash Consensus Algorithm
 > Ethash was Ethereum's proof-of-work mining algorithm. For more details visit this [link](https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/mining/mining-algorithms/ethash/).
-
 
 1. Make sure prerequisites are met and Hyperledger Besu is installed.
 
@@ -216,7 +215,7 @@ By default, Besu creates the mainnet’s genesis block. For a private network, a
   "difficulty": "0x10000",
   "contractSizeLimit": "24576",
   "alloc": {
-    "<pasteYourAccountAddressHere>": {
+    "<your_account_address>": {
       // Ensure you have access to this account in MetaMask or any other wallet. In MetaMask, go to the account details, copy the account address, and paste it here.
       "balance": "90000000000000000000000"
     }
@@ -281,7 +280,6 @@ Node functionality can be verified by deploying a simple smart contract. The exa
 
 #### Example Storage Contract Implementation
 
-
 ```solidity
 // SPDX-License-Identifier: GPL-3.0
 
@@ -305,7 +303,7 @@ contract Storage {
     }
 
     /**
-     * @dev Return value 
+     * @dev Return value
      * @return value of 'number'
      */
     function retrieve() public view returns (uint256){
@@ -313,16 +311,19 @@ contract Storage {
     }
 }
 ```
+
 #### Deploying a Smart Contract on Private Ethereum Network
 
 **Contract Overview**
 A basic Ethereum smart contract that implements a number storage system with the following functionality:
+
 - `store`: Stores a number value on the blockchain
 - `retrieve`: Retrieves the stored number from the blockchain
 
 ##### Deployment Instructions
 
 **Prerequisites**
+
 - Remix IDE
 - MetaMask wallet extension
 - Running private Besu network
@@ -330,11 +331,13 @@ A basic Ethereum smart contract that implements a number storage system with the
 ##### Step-by-Step Deployment Guide
 
 1. **Contract Setup in Remix**
+
    - Create `Storage.sol` in Remix IDE
    - Copy the contract code into the file
    - Compile using Solidity Compiler
 
 2. **MetaMask Configuration**
+
    - Connect to private network using these parameters:
      - Network Name: Private Besu
      - RPC URL: http://127.0.0.1:8545
@@ -342,6 +345,7 @@ A basic Ethereum smart contract that implements a number storage system with the
      - Currency Symbol: PBSU
 
 3. **Contract Deployment**
+
    - Select "Injected Provider - MetaMask" in Remix
    - Ensure correct account is selected in MetaMask
    - Deploy contract through Remix interface
@@ -354,7 +358,7 @@ A basic Ethereum smart contract that implements a number storage system with the
 > [!TIP]
 > Refer to the accompanying [video](https://youtu.be/7fWQzc_eFYo) for guidance.
 
-## Private Multi-Node Network Configuration
+## Extending Single Node to Multi-Node Network
 
 ### Introduction
 
@@ -422,7 +426,7 @@ Refer [here](https://besu.hyperledger.org/stable/public-networks/reference/api) 
 
 To validate the network’s operation, the simple storage smart contract used previously will be deployed.
 
-First, connect the Remix IDE to the full node at URL (8546) via MetaMask and initiate the contract deployment. Set a value for the message variable using the `setMessage` function. Note down the contract address. Then, switch the MetaMask connection to the miner node URL (8546). In the ‘Deploy & Run Transaction’ section, input the contract address to access the previously deployed contract. Execute the `getMessage()` function and check the resulting output.
+First, connect the Remix IDE to the full node at URL (8546) via MetaMask and initiate the contract deployment. Set a value for the `number` variable using the `store` function. Note down the contract address. Then, switch the MetaMask connection to the miner node URL (8546). In the ‘Deploy & Run Transaction’ section, input the contract address to access the previously deployed contract. Execute the `retrieve()` function and check the resulting output.
 
 > [!TIP]
 > Refer to the accompanying [Video](https://youtu.be/FZs1H-zjUkY)
@@ -430,3 +434,439 @@ First, connect the Remix IDE to the full node at URL (8546) via MetaMask and ini
 ### Terminating the Node
 
 To shut down the node, use the keyboard interrupt, `Ctrl + C`. While closing the terminal might sometimes work, there are instances where the Java process remains active. This lingering process can prevent the node from restarting, as it utilizes system resources.
+
+## Private Multi-Node Network Configuration
+
+### Introduction
+
+This section covers setting up a custom Ethereum private network across the internet. Instead of using a single device, each node will be on a separate machine. Virtual machine services like Azure or Digital Ocean or AWS can be used for this setup. Alternatively, multiple desktops or laptops can also be used.
+
+### System Configuration
+
+The network was tested with the following setup:
+
+**VM Configuration**
+
+- Processor: 2 CPUs
+- RAM: 4 GB
+- Storage: 80 GB SSD
+
+**Software Configuration**
+
+- Ubuntu 22.04.3 LTS
+- Besu 23.7.1
+- Docker version 24.0.5
+
+Before starting, it's important to understand the network architecture. A dashboard will also be introduced to provide an overview of the network's structure and performance.
+
+### Network Architecture
+
+The private network includes one boot node, two miner nodes, and ten full nodes. All nodes in this setup are full nodes. The nodes connect to a single boot node, which is crucial for network operation. Unlike the Ethereum mainnet, which uses multiple boot nodes, this private network needs only one boot node. The boot node helps with peer discovery, ensuring all nodes can communicate and synchronize efficiently.
+
+![Network Architecture](assets/images/network-architecture.png)
+
+> [!TIP]
+> Use the command `ip addr` in the terminal to get the IP address of a system. Use `ping <IP_address>` to check connectivity to other systems.
+
+### Automation via Containerization
+
+So far, the system has been configured by manually inputting commands sequentially. While this method works, it can become cumbersome and time-consuming, especially when setting up a private network with multiple nodes. To streamline and enhance this process, **Docker** can be leveraged. Docker offers a more efficient way to automate the deployment and operation of each node and the dashboard. By utilizing Docker containers, a consistent environment for each node can be ensured, simplifying the overall setup and making the expansion and management of the network more straightforward and efficient.
+
+Begin by crafting the necessary `docker-compose.yaml` files and `Dockerfiles`. These files are essential for defining and running multi-container Docker applications. By creating these, a structured and efficient deployment of services can be ensured. The `docker-compose.yaml` will allow the specification and management of the services, networks, and volumes needed, while the `Dockerfiles` will detail the environment and instructions for building the containerized applications. This approach will streamline the setup and make it more scalable and manageable in the long run.
+
+To streamline and optimize the network setup, Docker scripts tailored for several components need to be crafted. Here’s a breakdown of the focus areas:
+
+- **Network Dashboard**: Serves as the central monitoring hub, providing a visual representation of the network’s health and performance.
+- **Boot Node**: Essential for peer discovery, the boot node acts as the intermediary, ensuring efficient communication and synchronization across the network.
+- **Full Node**: These nodes validate and relay transactions, playing a crucial role in maintaining the integrity and functionality of the network.
+- **Miner Node**: Dedicated to mining, these nodes validate new transactions and add them to the blockchain, ensuring the network’s continuity and security.
+
+By developing Docker scripts for each component, a more streamlined deployment and management process can be ensured, making the network more robust and efficient.
+
+Start by creating a new directory named "BesuNetwork" or initiate a new repository called "BesuNetwork" and clone it. Inside this directory, construct the following subdirectories:
+
+- Dashboard
+- BootNode
+- FullNode
+- MinerNode
+
+With these folders in place, proceed to craft Docker scripts tailored for each specific subdirectory. Perform each of the following in the corresponding folder.
+
+### Network Dashboard
+
+A visual summary of network activity can be monitored via a dashboard. A dashboard commonly used by the Ethereum community will be utilized for this purpose.
+
+![Network Dashboard](assets/images/network-dashboard.png)
+
+The process begins by crafting Docker scripts tailored for the Network Dashboard. This will leverage a community-driven project named [ethstatus](https://github.com/goerli/ethstats-server). This platform will act as a central hub where all nodes in the network will connect and relay essential information. By integrating with `ethstatus`, a streamlined communication process is ensured, allowing each node to provide the dashboard with vital details for comprehensive monitoring and management of the network’s health and performance.
+
+Initially, the focus will be on constructing the Docker image for the Network Dashboard application. This involves creating a `Dockerfile` to define the necessary parameters and instructions. The `Dockerfile` typically contains instructions for building a Docker image, including the base image to use, environment variables, file copying from the host to the container, dependency installation, and commands to run during image creation. Once built, this image can be used to run containers with the configured environment and application.
+
+```Dockerfile
+# Use an official Node.js runtime as the base image
+FROM node:latest
+
+# Declare the build argument
+ARG WS_SECRET
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Clone the git repository
+RUN git clone https://github.com/Justinjdaniel/ethstats-server .
+
+# Install dependencies
+RUN npm install && \
+    npm install -g grunt-cli && \
+    npm install grunt –save-dev
+
+# Build the project for monitoring the proof of work
+RUN npx grunt pow
+
+# Use the build argument to set the environment variable
+ENV WS_SECRET=$WS_SECRET
+
+# Expose port 3000 for the app
+EXPOSE 3000
+
+# Command to run the app
+CMD ["npm", "start"]
+```
+
+After constructing the Docker image for the Network Dashboard application using the `Dockerfile`, the next step is to create a `docker-compose.yaml` file.
+
+```yml
+version: '3'
+services:
+  ethstats-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+      WS_SECRET: thisIsSecret
+
+    ports:
+      - '3000:3000'
+
+    user: '0'
+```
+
+This network monitor can be accessed through the address \[vm_machine_ip]:3000. Not only can the local machine access this monitor, but other systems within the network can also view it using the same URL: \[vm_machine_ip]:3000. Once accessed, it provides a comprehensive overview of the network, showcasing details about the nodes, their mining status, and a range of other performance metrics. This visibility ensures a clear understanding of the network’s health and performance at all times.
+
+### Boot Node
+
+Next, the focus shifts to setting up the boot node. This involves creating Docker scripts, a genesis file, and a node configuration file.
+
+The boot node is a foundational element in the network. Its configuration is crucial because it needs to accept connection requests from different machines within the network. This ensures that all nodes, whether full nodes, miner nodes, or others, can connect and synchronize seamlessly. Properly configuring the boot node and ensuring its accessibility lays the groundwork for a robust and interconnected network, where each node can efficiently communicate and share data.
+
+First, the genesis file must be consistent across all nodes. Uniformity is crucial, as any discrepancy in the genesis file will prevent the network from being established.
+
+**genesis.json**
+
+```json
+{
+  "config": {
+    "berlinBlock": 0,
+    "ethash": {
+      "fixeddifficulty": 1000
+    },
+    "chainID": "1100001"
+  },
+  "gasLimit": "0x1000000",
+  "difficulty": "0x10000",
+  "contractSizeLimit": "24576",
+  "alloc": {
+    "<your_account_address>": {
+      "balance": "90000000000000000000000"
+    }
+  }
+}
+```
+
+Next, the Docker Compose file to run the node will be created.
+
+**docker-compose.yaml**
+
+```yaml
+# Specify the version of the docker-compose file format
+version: '3'
+
+# Define the services (containers) to run
+services:
+  # Service name
+  node:
+    # Image to use for this service
+    image: hyperledger/besu:latest
+
+    # Name of the container
+    container_name: 'BootNode'
+
+    # Restart policy for the container
+    restart: unless-stopped
+
+    # Port mappings between the host and the container
+    ports:
+      - '30311:30311' # TCP port mapping
+      - '30311:30311/udp' # UDP port mapping
+      - '8500:8500' # Additional TCP port mapping
+
+    # Mount host directories/volumes into the container
+    # Mount the current directory to /BootNode/ in the container with
+    # read-write permissions
+    volumes:
+      - .:/BootNode/:rw
+
+    # Command to run when the container starts
+    command: --config-file=/BootNode/config.toml
+
+    # Set the user ID for the process inside the container (0 is root)
+    user: '0'
+```
+
+Both TCP and UDP ports are explicitly exposed because Ethereum uses both protocols for peer discovery. The user is set to root to address certain permission challenges associated with Besu.
+
+Next, the configuration file for the node will be written.
+
+**config.toml**
+
+```toml
+nat-method="AUTO"
+data-path = "/BootNode/data"
+genesis-file = "/BootNode/genesis.json"
+network-id = "01000001"
+
+# Connection related
+host-allowlist = ["all"]
+
+# P2P related
+p2p-port = 30311
+
+# RPC related
+rpc-http-enabled = true
+rpc-http-port = "8500"
+rpc-http-api = ["ADMIN", "ETH", "NET", "TXPOOL", "WEB3", "DEBUG", "TXPOOL", "TRACE", "PLUGINS"]
+rpc-http-cors-origins = ["all"]
+
+# ethstats
+ethstats="BootNode:thisIsSecret@vm_machine_ip:3000"
+```
+
+These parameters mirror those previously provided via the command line but are now consolidated into a `TOML` config file. Some new parameters are also introduced:
+
+- **nat-method**: Specifies the method for NAT (Network Address Translation). "AUTO" means the system will automatically determine the best method, which will be set to Docker.
+- **host-allowlist**: Specifies which hosts are allowed to connect. Setting it to \["all"] allows any host to connect.
+- **rpc-http-cors-origins**: Specifies the origins for cross-origin requests to the HTTP-RPC server. Setting it to \["all"] allows any origin to make requests.
+- **ethstats**: Specifies the reporting URL of an ethstats service, expressed as nodename:secret@host:port.
+
+A final file named `key` must be generated within a new folder called `data`. This file will store the private key for the node. Any private key can be used for this purpose.
+
+**data/key**
+
+```
+0xc9b17d1daef892fc978e4fba821d27df650f457210cf4a3884d27f79bfbad744
+```
+
+Understanding the significance of this step is essential. Each node is uniquely identified within the network using an `enode ID`, a public identifier derived from the private key. By setting this up in advance, the enode ID for the boot node can be determined. Without this step, the enode ID would change every time the node is initiated without being explicitly defined. Knowing the enode ID beforehand allows it to be referenced in other nodes' Docker scripts, ensuring no need to adjust the boot node’s enode ID when launching the network.
+
+### Full Node
+
+After completing the boot node setup, the next step is to configure the full node. The process is nearly identical.
+
+First, the genesis file, which is the same as the boot node.
+
+**genesis.json**
+
+```json
+{
+  "config": {
+    "berlinBlock": 0,
+    "ethash": {
+      "fixeddifficulty": 1000
+    },
+    "chainID": "1100001"
+  },
+  "gasLimit": "0x1000000",
+  "difficulty": "0x10000",
+  "contractSizeLimit": "24576",
+  "alloc": {
+    "<your_account_address>": {
+      "balance": "90000000000000000000000"
+    }
+  }
+}
+```
+
+Next, the Docker Compose file.
+
+**docker-compose.yaml**
+
+```yaml
+version: '3'
+services:
+  node:
+    image: hyperledger/besu:latest
+    container_name: 'FullNode'
+    restart: unless-stopped
+    ports:
+      - '30312:30312' # TCP
+      - '30312:30312/udp' # UDP
+      - '8501:8501'
+    volumes:
+      - .:/FullNode/:rw
+    command: --config-file=/FullNode/config.toml
+    user: '0'
+```
+
+Finally, the configuration file.
+
+**config.toml**
+
+```toml
+nat-method = "AUTO"
+data-path = "/FullNode/data"
+genesis-file = "/FullNode/genesis.json"
+network-id = "01000001"
+
+# Connection related
+host-allowlist = ["all"]
+
+# P2P related
+p2p-port = 30312
+
+# RPC related
+rpc-http-enabled = true
+rpc-http-port = 8501
+rpc-http-api = ["ADMIN", "ETH", "NET", "TXPOOL", "WEB3", "DEBUG", "TXPOOL", "TRACE", "PLUGINS"]
+rpc-http-cors-origins = ["all"]
+
+ethstats = "FullNode:thisIsSecret@vm_machine_ip:3000"
+
+# Bootnodes
+bootnodes = ["enode://4f1ab271f4dbd53b2cb0c8f55daa3d1ec315a7c8f130a09e54979aef41708792b18a903b6d96746fc6c4855459e69625f8a428d387692964f86b6a9d5888f128@vm_machine_ip:30311"]
+```
+
+### Miner Node
+
+Lastly, the miner node setup is addressed. Its configuration is similar to the previous nodes. However, in the MinerNode config file, mining is activated upon launch using `miner-enabled`, and the `miner-coinbase` address is specified.
+
+First, the genesis file, which is the same as the boot node and full node.
+
+**genesis.json**
+
+```json
+{
+  "config": {
+    "berlinBlock": 0,
+    "ethash": {
+      "fixeddifficulty": 1000
+    },
+    "chainID": "1100001"
+  },
+  "gasLimit": "0x1000000",
+  "difficulty": "0x10000",
+  "contractSizeLimit": "24576",
+  "alloc": {
+    "<your_account_address>": {
+      "balance": "90000000000000000000000"
+    }
+  }
+}
+```
+
+Next, the Docker Compose file.
+
+**docker-compose.yaml**
+
+```yaml
+version: '3'
+services:
+  node:
+    image: hyperledger/besu:latest
+    container_name: 'MinerNode'
+    restart: unless-stopped
+    ports:
+      - '30313:30313' # TCP
+      - '30313:30313/udp' # UDP
+      - '8502:8502'
+    volumes:
+      - .:/MinerNode/:rw
+    command: --config-file=/MinerNode/config.toml
+    user: '0'
+```
+
+Finally, the configuration file.
+
+**config.toml**
+
+```toml
+nat-method = "AUTO"
+data-path = "/MinerNode/data"
+genesis-file = "/MinerNode/genesis.json"
+network-id = "01000001"
+
+# Connection related
+host-allowlist = ["all"]
+
+# P2P related
+p2p-port = 30313
+
+# RPC related
+rpc-http-enabled = true
+rpc-http-port = 8502
+rpc-http-api = ["ADMIN", "ETH", "NET", "TXPOOL", "WEB3", "DEBUG", "TXPOOL", "TRACE", "PLUGINS"]
+rpc-http-cors-origins = ["all"]
+
+# ethstats
+ethstats = "BootNode:thisIsSecret@vm_machine_ip:3000"
+
+# Mining
+miner-enabled = true
+miner-coinbase = "<your_account_address>"
+
+# Bootnodes
+bootnodes = ["enode://4f1ab271f4dbd53b2cb0c8f55daa3d1ec315a7c8f130a09e54979aef41708792b18a903b6d96746fc6c4855459e69625f8a428d387692964f86b6a9d5888f128@vm_machine_ip:30311"]
+```
+
+The final folder structure will be as follows:
+
+![folder structure](assets/images/folder-structure.png)
+
+Now that all the necessary files are prepared, it is time to push them to the repository. This will facilitate easy copying to the target computers. Alternatively, each folder can be manually copied and pasted onto the respective machines. Using GitHub streamlines this process.
+
+> [!TIP]
+> Refer to the accompanying [video](https://youtu.be/s-i86we-KGY) for guidance.
+
+### Launching the Distributed Network
+
+Before distributing the folders to their respective machines, a few preparatory steps are necessary to ensure smooth operation:
+
+1. **Address Replacement**: In both the genesis and config files, replace any placeholder addresses with the actual addresses intended for use. Ensure possession of the private key corresponding to these addresses, as it will be needed for various operations.
+2. **IP Configuration**: Replace any instances of `vm_machine_ip` with the actual IP address of the machine where the boot node will run. If setting up a network dashboard, specify its IP address. The boot node and network dashboard can reside on separate machines. Adjust the IP addresses in the configuration files accordingly.
+
+With the configurations in place:
+
+- **Distribution**: Manually copy the folders or clone them to the target machines.
+- **Network Dashboard Setup**: Set up the Network Dashboard on Machine 1 or another machine. Navigate to the `BesuNetworks/Dashboard` directory and run the command `docker-compose up -d`.
+- **Boot Node Initialization**: On Machine 1, navigate to the `BesuNetworks/BootNode` directory and execute the command `docker-compose up -d` to initiate the boot node.
+- **Launching Miner and Full Nodes**: With the boot node and dashboard operational, proceed to launch the Miner Nodes and Full Nodes. Depending on requirements, run two Miner Nodes and ten Full Nodes, or a different combination. To start each node, navigate to its respective directory containing the `docker-compose.yaml` file and execute `docker-compose up -d`.
+
+After setting everything up, visit the network dashboard to monitor the status and performance of the network.
+
+![Network Dashboard](assets/images/network-dashboard.png)
+
+By following these steps, a fully operational Besu network with nodes distributed across multiple machines will be established.
+
+### Network Functionality Testing
+
+With the Besu network operational, validating its functionality is essential. One effective way to do this is by deploying a previously used smart contract.
+
+1. **Connecting to the Full Node**: Link the Remix IDE to the full node using its URL endpoint and establish the connection via MetaMask.
+2. **Deploying the Smart Contract**: Once connected, deploy the smart contract and set a value for the `number` variable using the `store` function. Note the contract’s address for future reference.
+3. **Switching to the Miner Node**: Transition the MetaMask connection to the miner node.
+4. **Accessing the Deployed Contract**: In Remix’s ‘Deploy & Run Transaction’ section, input the noted contract address to interact with the contract deployed on the full node.
+5. **Verifying Contract Functionality**: Invoke the `retrieve()` function to ensure the contract functions as expected. Review the output to confirm it matches the number set earlier.
+
+By following these steps, the network’s operation is validated, ensuring seamless interaction between nodes when deploying and accessing smart contracts.
+
+> [!TIP]
+> Refer to the accompanying [video](https://youtu.be/MGbu9QkTG9c) for guidance.
