@@ -1,13 +1,13 @@
-# Learn-Ethereum-Network-Administrator
+# Learn Ethereum Network Administration
 
 > [!TIP]
 > Official Besu [documentation](https://besu.hyperledger.org/)
 
 > [!NOTE]
-> This is a note taken during the exploration of **Ethereum Network Administrator [ENA]** (self paced learning).
+> This is a note taken during the self-paced exploration of **Ethereum Network Administrator (ENA)**.
 
 > [!CAUTION]
-> This is just an overview, and you should refer to official documentations for more detailed instructions.
+> This is just an overview. For comprehensive and detailed instructions, always refer to the official documentation.
 
 ## Need for Building Customizable Ethereum Networks
 
@@ -31,9 +31,13 @@ It's important to note that private networks do not offer the same level of secu
 
 ### Ethereum-Compatible Layer 1 Chains
 
+Layer 1 chains are independent blockchains that operate on their own mainnet and do not rely on another blockchain for their operations. They provide the base layer of the blockchain architecture, handling all on-chain transactions and smart contract executions.
+
 Networks like Binance Smart Chain (BSC), Tron, Celo, Avalanche, and Genesis have forked or re-engineered versions of the Ethereum blockchain to create their own standalone networks, often referred to as Layer 1 chains. These chains adapt Ethereum's smart contracts and decentralized applications to their specific needs, tweaking parameters for speed, decentralization, or security. They are EVM-compatible, allowing developers to deploy applications using the same codebase as Ethereum.
 
-### Layer 2 Chains and Scaling Solutions
+### Layer 2 chains & Scaling solutions
+
+Layer 2 chains, also known as Layer 2 scaling solutions, are protocols built on top of the Ethereum blockchain to improve its scalability and efficiency. Examples include Polygon, xDai, Optimism, Arbitrum, and StarkNet. These solutions enable faster and cheaper transactions while maintaining the security of the Ethereum network.
 
 Layer 2 chains like Polygon, xDai, Optimism, Arbitrum, and StarkNet are built on top of Ethereum to improve scalability, enabling faster and cheaper transactions while maintaining the security of the Ethereum network.
 
@@ -43,7 +47,17 @@ The Ethereum Enterprise Alliance (EEA) was formed to empower organizations to em
 
 ## Ethereum Client
 
-An Ethereum client is vital software that connects to create the Ethereum network. After "The Merge" upgrade, Ethereum consists of the execution layer (EL) and the consensus layer (CL), each operated by distinct client software. The execution client processes transactions in the Ethereum Virtual Machine (EVM), while the consensus client implements the proof-of-stake consensus algorithm. Examples of execution clients include Geth, Nethermind, Hyperledger Besu, and Erigon, while examples of consensus clients include Prysm, Lighthouse, Teku, Nimbus, and Lodestar. These clients enable the seamless operation of the Ethereum blockchain.
+An Ethereum client is vital software that connects to create the Ethereum network. It is the software backbone of the Ethereum blockchain, enabling machines to connect, execute transactions, store data, and support decentralized application development. After "The Merge" upgrade, Ethereum consists of two distinct layers: the execution layer (EL) and the consensus layer (CL).
+
+### Execution Layer (EL)
+
+The execution layer is responsible for processing transactions and executing smart contracts within the Ethereum Virtual Machine (EVM). It handles the state of the blockchain, including account balances, contract code, and storage. Execution clients, such as Geth, Nethermind, Hyperledger Besu, and Erigon, manage this layer by validating and executing transactions, maintaining the state database, and providing APIs for developers to interact with the blockchain.
+
+### Consensus Layer (CL)
+
+The consensus layer implements the proof-of-stake (PoS) consensus algorithm, which ensures the network's security and agreement on the blockchain's state. Consensus clients, such as Prysm, Lighthouse, Teku, Nimbus, and Lodestar, manage this layer by proposing and validating new blocks, participating in the consensus process, and maintaining the chain's finality. The consensus layer coordinates validators, who are responsible for proposing and attesting to blocks, ensuring the network reaches consensus on the blockchain's state.
+
+These clients enable the seamless operation of the Ethereum blockchain by working together to process transactions, execute smart contracts, and maintain consensus across the network.
 
 These clients encompass a range of essential components, including:
 
@@ -54,8 +68,6 @@ These clients encompass a range of essential components, including:
 3. Peer-to-Peer Network: Peer-to-peer (P2P) networking is crucial for Ethereum clients as it enables communication and synchronization with other network nodes. P2P networking enhances decentralization and consensus mechanisms by sharing information and collectively validating transactions.
 
 4. APIs for Application Developers: Ethereum clients provide APIs for developers to interact with the blockchain, enabling decentralized app development, blockchain data querying, and transaction submission.
-
-An Ethereum client is the software backbone of the Ethereum blockchain, enabling machines to connect, execute transactions, store data, and support decentralized application development.
 
 ### Hyperledger Besu
 
@@ -75,6 +87,19 @@ Hyperledger Besu offers compatibility with
    - This approach ensures high transaction throughput, low latency, and efficient network governance, making it well-suited for consortium-based blockchain networks.
 3. **Proof of Stake**: Alongside a consensus client, Besu can be used to connect to and participate in Ethereum Mainnet proof-of-stake.
 4. Hyperledger Besu offers comprehensive permissioning schemes designed explicitly for use in consortium environments. These permissioning mechanisms allow organizations to control access, define roles and responsibilities, and establish governance rules within the network. Hyperledger Besu facilitates secure collaboration and fosters trust among consortium members by providing granular control over participants’ actions and data visibility. Now that we’ve covered the theoretical aspects let’s explore the practical side of creating customized Ethereum networks.
+
+### Unique Features of Hyperledger Besu
+
+1. **Adaptable EVM Implementation**: Supports various consensus algorithms and network configurations.
+2. **Compatibility with Public and Private Networks**: Can serve both public Ethereum networks and private permissioned ones.
+3. **Comprehensive Permissioning Schemes**: Designed for consortium environments, allowing granular control over participants’ actions and data visibility.
+4. **Support for Multiple Consensus Algorithms**: Includes Proof of Work (PoW), Proof of Authority (PoA) with IBFT 2.0, QBFT, Clique, and Proof of Stake (PoS).
+
+### Practical Steps to Use Hyperledger Besu
+
+Hyperledger Besu is an Ethereum client under Hyperledger Foundation’s projects. It serves as a collaborative platform for open-source blockchain projects and associated tools, aiming to advance the application and understanding of blockchain across different sectors.
+
+Now that we’ve covered the theoretical aspects, let’s explore the practical side of creating customized Ethereum networks.
 
 ## Installing Hyperledger Besu
 
@@ -194,7 +219,8 @@ By default, Besu creates the mainnet’s genesis block. For a private network, a
   "difficulty": "0x10000",
   "contractSizeLimit": "24576",
   "alloc": {
-    "<pasteYourAccountAddressHere>": { // make sure you have access to this account in metamask or any other wallet.
+    "<pasteYourAccountAddressHere>": {
+      // Ensure you have access to this account in MetaMask or any other wallet. In MetaMask, go to the account details, copy the account address, and paste it here.
       "balance": "90000000000000000000000"
     }
   }
@@ -223,13 +249,13 @@ By default, Besu creates the mainnet’s genesis block. For a private network, a
 
 ## Running a Private Node
 
-To run a private node, use the following command after replacing the `<pasteYourAccountAddressHere>`:
+To run a private node, use the following command after replacing the `<your_account_address>`:
 
 ```sh
 besu --identity="NodeA" --network-id=1000001 --data-path=Node1/data \
 --genesis-file=./genesis.json --rpc-http-enabled --rpc-http-host="0.0.0.0" \
 --rpc-http-port="8545" --rpc-http-api=ADMIN,ETH,NET,MINER,WEB3 --host-allowlist="*" \
---rpc-http-cors-origins="all" --miner-enabled --miner-coinbase="<pasteYourAccountAddressHere>"
+--rpc-http-cors-origins="all" --miner-enabled --miner-coinbase="<your_account_address>"
 ```
 
 ### Command Parameters
@@ -293,7 +319,6 @@ This contract allows storing and retrieving a string value with two functions: s
 
 Finally, load your address, deploy the contract to our network, and test it. Refer to the accompanying [video](https://youtu.be/7fWQzc_eFYo) for guidance.
 
-
 ## Private Multi-Node Network Configuration
 
 ### Introduction
@@ -303,18 +328,22 @@ Expanding our Ethereum network from a single node to a multi-node setup within a
 ### Node Roles
 
 #### Boot Node
+
 - Acts as the network coordinator, helping with peer discovery.
 - Serves as the gateway for other nodes to join the network.
 
 #### Miner Node
+
 - Validates transactions and participates in the consensus mechanism.
 - Important for adding new blocks to the blockchain.
 - Note: Usually, only one miner node is used in a multi-node setup on a single system to avoid high CPU usage.
 
 #### Full Node
+
 - Used by participants to send and receive transactions.
 
 #### Archive Nodes
+
 - Maintain a complete copy of the blockchain.
 - Mostly passive but can switch to a miner or boot node if needed.
 
@@ -328,7 +357,7 @@ Expanding our Ethereum network from a single node to a multi-node setup within a
 
 In the previous setup, the node functioned primarily as a miner. However, it can also act as a bootnode. This function wasn’t utilized earlier because there were no multiple nodes needing to connect with each other. As the network expands, this node will act as the entry point for new nodes, allowing them to connect and integrate into the network.
 
-First, to connect to the bootnode, the enode ID is required. This ID uniquely identifies the node in an Ethereum network, similar to an IP address. This can be obtained from the console log of the previously run node.
+First, to connect to the bootnode, the enode ID is required. The enode ID is a unique identifier for each node in an Ethereum network, similar to an IP address. It allowing other nodes to locate and connect to it. You can obtain the enode ID from the console log of the previously run node. Look for a line in the log that starts with "Enode URL" or similar, which will display the enode ID in the format `enode://<public_key>@<ip_address>:<port>`.
 
 ![encode ID](assets/images/encode-id.png)
 
