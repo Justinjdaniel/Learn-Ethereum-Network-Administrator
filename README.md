@@ -6,7 +6,7 @@
 > [!NOTE]
 > This is a note taken during the exploration of **Ethereum Network Administrator [ENA]** (self paced learning).
 
-> [!CAUTION] 
+> [!CAUTION]
 > This is just an overview, and you should refer to official documentations for more detailed instructions.
 
 ## Need for Building Customizable Ethereum Networks
@@ -80,57 +80,63 @@ Hyperledger Besu offers compatibility with
 
 To install Hyperledger Besu, ensure your system has Java installed since Besu is Java-based. This tutorial is tailored for Ubuntu systems.
 
-1. ### Install Java:
+1. ### Install Java
 
    ```sh
    sudo apt update
    sudo apt install openjdk-21-jdk
    ```
 
-2. ### Verify the installation:
+2. ### Verify the installation
 
    ```sh
    java --version
    ```
 
-3. ### Download Hyperledger Besu:
+3. ### Download and set up Hyperledger Besu
 
-   Visit [Hyperledger Besu Releases](https://github.com/hyperledger/besu/releases) and download the latest version. For this guide, we'll use Hyperledger Besu 23.4.4.
+   1. **Install Prerequisites**:
 
-4. ### Set Up Besu:
+      Ensure you have Java 21 installed.
 
-   Create a folder named besu and navigate into it:
+   2. **Download Besu**:
 
-   ```sh
-   mkdir besu
-   cd besu
-   ```
+      Navigate to the directory where you want to install Besu and download the required release from the [official Hyperledger Besu Releases](https://github.com/hyperledger/besu/releases). For this guide, we'll use Hyperledger Besu 23.4.4.
 
-   Extract the downloaded ZIP file into the besu folder. Then, verify the Besu version:
+   3. **Extract the Archive**:
 
-   ```sh
-   ./bin/besu --version
-   ```
+      Extract the downloaded archive:
 
-5. ### Set Environment Variable:
+      ```sh
+      tar -xvf besu-<version>.tar.gz
+      ```
 
-   To access Besu globally, set the environment variable. Copy the path to the bin folder, then open the environment file:
+   4. **Set Up Environment Variables**:
 
-   ```sh
-   sudo nano /etc/environment
-   ```
+      Add Besu to your PATH by editing your `.bashrc` or `.zshrc` file:
 
-   Append the copied path at the end of the current data, separating values with a colon `:`.
+      ```sh
+      echo 'export PATH=$PATH:/path/to/besu/bin' >> ~/.bashrc
+      source ~/.bashrc
+      ```
 
-   Use `Ctrl+O` to save and `Ctrl+X` to exit the editor.
+      here, as we are using Besu 23.4.4 and extracted at root then path is `PATH=$PATH:~/besu23.4.4/bin`
 
-6. ### Apply Changes:
+   5. **Verify Installation**:
 
-   Restart the system to reflect the updates. Verify the changes with:
+      Check if Besu is installed correctly by running:
 
-   ```sh
-   besu
-   ```
+      ```sh
+      besu --version
+      ```
+
+   6. **Run Besu**:
+
+      Restart the system to reflect the updates. You can now run Besu with the default options:
+
+      ```sh
+      besu
+      ```
 
 ## Setting Up Single Node Private Ethereum Network
 
@@ -139,19 +145,25 @@ To install Hyperledger Besu, ensure your system has Java installed since Besu is
 
 > [!NOTE]
 >
-> ### Ethash Consensus Algorithm:
+> ### Ethash Consensus Algorithm
+
 1. Make sure prerequisites are met and Hyperledger Besu is installed.
+
 > Ethash was Ethereum's proof-of-work mining algorithm. For more details visit this [link](https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/mining/mining-algorithms/ethash/).
 
 1. Make sure prerequisites are met and Hyperledger Besu is installed.
+
    ```sh
    besu --version
    ```
+
 2. Create a New Folder and use that directory: (optional)
+
    ```sh
    mkdir PrivateNetwork
    cd PrivateNetwork
    ```
+
 3. Create a configuration file.
 4. Start the Node.
 5. Interaction with the Node using JSON-RPC calls or command-line interfaces to send transactions, deploy smart contracts, or request blockchain data.
@@ -182,7 +194,7 @@ By default, Besu creates the mainnet’s genesis block. For a private network, a
   "difficulty": "0x10000",
   "contractSizeLimit": "24576",
   "alloc": {
-    "pasteYourAccountAddressHere": {
+    "<pasteYourAccountAddressHere>": { // make sure you have access to this account in metamask or any other wallet.
       "balance": "90000000000000000000000"
     }
   }
@@ -211,11 +223,14 @@ By default, Besu creates the mainnet’s genesis block. For a private network, a
 
 ## Running a Private Node
 
-To run a private node, use the following command:
+To run a private node, use the following command after replacing the `<pasteYourAccountAddressHere>`:
 
 ```sh
-besu  --identity=”NodeA” --network-id 1000001 --data-path=Node1/data --genesis-file=./genesis.json --rpc-http-enabled --rpc-http-host="0.0.0.0" --rpc-http-port "8545" --rpc-http-api=ADMIN,ETH,NET,MINER,WEB3 --host-allowlist="*" --rpc-http-cors-origins="all" --miner-enabled --miner-coinbase="pasteYourAccountAddressHere"
-besu  --identity="NodeA" --network-id 1000001 --data-path=Node1/data --genesis-file=./genesis.json --rpc-http-enabled --rpc-http-host="0.0.0.0" --rpc-http-port "8545" --rpc-http-api=ADMIN,ETH,NET,MINER,WEB3 --host-allowlist="*" --rpc-http-cors-origins="all" --miner-enabled --miner-coinbase="pasteYourAccountAddressHere"
+besu --identity="NodeA" --network-id=1000001 --data-path=Node1/data \
+--genesis-file=./genesis.json --rpc-http-enabled --rpc-http-host="0.0.0.0" \
+--rpc-http-port="8545" --rpc-http-api=ADMIN,ETH,NET,MINER,WEB3 --host-allowlist="*" \
+--rpc-http-cors-origins="all" --miner-enabled --miner-coinbase="<pasteYourAccountAddressHere>"
+```
 
 ### Command Parameters
 
@@ -271,9 +286,82 @@ This contract allows storing and retrieving a string value with two functions: s
 3. Connect MetaMask:
    - Use the Injected Provider – MetaMask option in the Environment dropdown under the Deploy & Run Transactions tab.
 4. Configure MetaMask to connect to our private network:
-   - Network name: Test Network (any name)
-   - New RPC URL: http://127.0.0.1:8545 (from node console)
+   - Network name: Private Besu (any name)
+   - New RPC URL: <http://127.0.0.1:8545> (from node console)
    - Chain ID: 1100001 (from genesis file)
-   - Currency symbol: TETH (any symbol)
+   - Currency symbol: PBSU (any symbol)
 
 Finally, load your address, deploy the contract to our network, and test it. Refer to the accompanying [video](https://youtu.be/7fWQzc_eFYo) for guidance.
+
+
+## Private Multi-Node Network Configuration
+
+### Introduction
+
+Expanding our Ethereum network from a single node to a multi-node setup within a single system. Here are the key points:
+
+### Node Roles
+
+#### Boot Node
+- Acts as the network coordinator, helping with peer discovery.
+- Serves as the gateway for other nodes to join the network.
+
+#### Miner Node
+- Validates transactions and participates in the consensus mechanism.
+- Important for adding new blocks to the blockchain.
+- Note: Usually, only one miner node is used in a multi-node setup on a single system to avoid high CPU usage.
+
+#### Full Node
+- Used by participants to send and receive transactions.
+
+#### Archive Nodes
+- Maintain a complete copy of the blockchain.
+- Mostly passive but can switch to a miner or boot node if needed.
+
+### Modular and Flexible Architecture
+
+- Blockchain's architecture allows a single node to perform multiple roles without interference.
+- In smaller/private networks, combining roles helps optimize resources and streamline management.
+- In larger public networks (like Ethereum mainnet), roles are distinct to improve efficiency, security, and scalability.
+
+### Extending to Multi-Node Network
+
+In the previous setup, the node functioned primarily as a miner. However, it can also act as a bootnode. This function wasn’t utilized earlier because there were no multiple nodes needing to connect with each other. As the network expands, this node will act as the entry point for new nodes, allowing them to connect and integrate into the network.
+
+First, to connect to the bootnode, the enode ID is required. This ID uniquely identifies the node in an Ethereum network, similar to an IP address. This can be obtained from the console log of the previously run node.
+
+[encode ID](assets/images/encode-id.png)
+
+Next, a new terminal should be opened in the `PrivateNetwork` folder. To start the second node, the following command should be executed. It is quite similar to the command used for the previous node, with differences `--data-path=Node2/data --identity="NodeB"`, `--rpc-http-port "8546"`, and `--p2p-port "30304" --bootnodes="enode_url`:
+
+```sh
+besu --network-id 1000001 --data-path=Node2/data --identity="NodeB" --genesis-file=./genesis.json --rpc-http-enabled --rpc-http-host="0.0.0.0" --rpc-http-port "8546" --rpc-http-api=ADMIN,ETH,NET,MINER,WEB3 --host-allowlist="*" --rpc-http-cors-origins="all" --p2p-port "30304" --bootnodes="enode_url"
+```
+
+The `data-path` for this command is modified to point to a different directory, and the `identity` and `rpc-http-port` are adjusted to values distinct from those used in the previous node setup. The `p2p-port` for peer-to-peer interactions is also defined, defaulting to 30303 if no value is provided. The initial node is set as the boot node by providing its enode address.
+
+The same command can be used to operate the third node, fourth node, and so forth, simply by adjusting the mentioned parameters.
+
+### Network Functionality Testing
+
+The network is now active. To check the network’s status, several API endpoints are available through the Besu client. The parameter set using `rpc-http-api` was configured to ADMIN, ETH, NET, MINER, WEB3, which are the various API modules available for interaction with the node. For API queries, tools like Postman or Curl can be employed.
+
+To communicate with these endpoints, understanding the request format is essential. The Besu Team provides the necessary request formats, refer [here](https://besu.hyperledger.org/assets/files/postman_collection-1354ef299155a66a6083e20e7571a9d3.json) to learn more. Import this collection into Postman or Curl and experiment with the listed methods by invoking them.
+
+- **admin_peers**: Provides details on the connected remote nodes.
+- **net_peerCount**: Indicates the current count of peers connected to the client.
+- **net_enode**: Displays the enode URL.
+
+Refer [here](https://besu.hyperledger.org/stable/public-networks/reference/api) for details about other APIs.
+
+### Smart Contract Deployment
+
+To validate the network’s operation, the simple storage smart contract used previously will be deployed.
+
+First, connect the Remix IDE to the full node at URL (8546) via MetaMask and initiate the contract deployment. Set a value for the message variable using the `setMessage` function. Note down the contract address. Then, switch the MetaMask connection to the miner node URL (8546). In the ‘Deploy & Run Transaction’ section, input the contract address to access the previously deployed contract. Execute the `getMessage()` function and check the resulting output.
+
+Here is a video link to check the process: [Video](https://youtu.be/FZs1H-zjUkY)
+
+### Terminating the Node
+
+To shut down the node, use the keyboard interrupt, `Ctrl + C`. While closing the terminal might sometimes work, there are instances where the Java process remains active. This lingering process can prevent the node from restarting, as it utilizes system resources.
