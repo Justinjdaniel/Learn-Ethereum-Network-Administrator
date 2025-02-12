@@ -330,7 +330,7 @@ In the previous setup, the node functioned primarily as a miner. However, it can
 
 First, to connect to the bootnode, the enode ID is required. This ID uniquely identifies the node in an Ethereum network, similar to an IP address. This can be obtained from the console log of the previously run node.
 
-[encode ID](assets/images/encode-id.png)
+![encode ID](assets/images/encode-id.png)
 
 Next, a new terminal should be opened in the `PrivateNetwork` folder. To start the second node, the following command should be executed. It is quite similar to the command used for the previous node, with differences `--data-path=Node2/data --identity="NodeB"`, `--rpc-http-port "8546"`, and `--p2p-port "30304" --bootnodes="enode_url`:
 
