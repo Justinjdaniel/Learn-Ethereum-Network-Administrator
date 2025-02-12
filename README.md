@@ -169,12 +169,9 @@ To install Hyperledger Besu, ensure your system has Java installed since Besu is
 > Check out the official tutorials [Private Network QuickStart](https://besu.hyperledger.org/stable/private-networks/tutorials/quickstart)
 
 > [!NOTE]
->
-> ### Ethash Consensus Algorithm
-
-1. Make sure prerequisites are met and Hyperledger Besu is installed.
-
+>Ethash Consensus Algorithm
 > Ethash was Ethereum's proof-of-work mining algorithm. For more details visit this [link](https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/mining/mining-algorithms/ethash/).
+
 
 1. Make sure prerequisites are met and Hyperledger Besu is installed.
 
@@ -278,46 +275,84 @@ Execute the command to start the node. The node will begin mining and its status
 
 ## Ethereum Node Functionality Testing
 
-### Testing the Ethereum Node
+### Testing Node Operation
 
-To test our Ethereum node, we will deploy a simple storage smart contract.
+Node functionality can be verified by deploying a simple smart contract. The example contract below comes from the Remix IDE.
 
-#### Smart Contract (MessageContract.sol)
+#### Example Storage Contract Implementation
+
 
 ```solidity
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.21;
 
-contract MessageContract {
-    string message;
+pragma solidity >=0.8.2 <0.9.0;
 
-    function getMessage() public view returns (string memory) {
-        return message;
+/**
+ * @title Storage
+ * @dev Store & retrieve value in a variable
+ * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
+ */
+contract Storage {
+
+    uint256 number;
+
+    /**
+     * @dev Store value in variable
+     * @param num value to store
+     */
+    function store(uint256 num) public {
+        number = num;
     }
 
-    function setMessage(string memory _message) public {
-        message = _message;
+    /**
+     * @dev Return value 
+     * @return value of 'number'
+     */
+    function retrieve() public view returns (uint256){
+        return number;
     }
 }
 ```
+#### Deploying a Smart Contract on Private Ethereum Network
 
-This contract allows storing and retrieving a string value with two functions: setMessage to store the value, and getMessage to retrieve it.
+**Contract Overview**
+A basic Ethereum smart contract that implements a number storage system with the following functionality:
+- `store`: Stores a number value on the blockchain
+- `retrieve`: Retrieves the stored number from the blockchain
 
-#### Deploying the Contract
+##### Deployment Instructions
 
-1. Open Remix IDE.
-2. Create and Compile Contract:
-   - Create a file MessageContract.sol and copy the above code.
-   - Compile the contract.
-3. Connect MetaMask:
-   - Use the Injected Provider – MetaMask option in the Environment dropdown under the Deploy & Run Transactions tab.
-4. Configure MetaMask to connect to our private network:
-   - Network name: Private Besu (any name)
-   - New RPC URL: <http://127.0.0.1:8545> (from node console)
-   - Chain ID: 1100001 (from genesis file)
-   - Currency symbol: PBSU (any symbol)
+**Prerequisites**
+- Remix IDE
+- MetaMask wallet extension
+- Running private Besu network
 
-Finally, load your address, deploy the contract to our network, and test it. Refer to the accompanying [video](https://youtu.be/7fWQzc_eFYo) for guidance.
+##### Step-by-Step Deployment Guide
+
+1. **Contract Setup in Remix**
+   - Create `Storage.sol` in Remix IDE
+   - Copy the contract code into the file
+   - Compile using Solidity Compiler
+
+2. **MetaMask Configuration**
+   - Connect to private network using these parameters:
+     - Network Name: Private Besu
+     - RPC URL: http://127.0.0.1:8545
+     - Chain ID: 1100001
+     - Currency Symbol: PBSU
+
+3. **Contract Deployment**
+   - Select "Injected Provider - MetaMask" in Remix
+   - Ensure correct account is selected in MetaMask
+   - Deploy contract through Remix interface
+   - Confirm transaction in MetaMask
+
+4. **Verification**
+   - Test contract functionality using Remix's interface
+   - Verify both number storage and retrieval operations
+
+> [!TIP]
+> Refer to the accompanying [video](https://youtu.be/7fWQzc_eFYo) for guidance.
 
 ## Private Multi-Node Network Configuration
 
@@ -389,7 +424,8 @@ To validate the network’s operation, the simple storage smart contract used pr
 
 First, connect the Remix IDE to the full node at URL (8546) via MetaMask and initiate the contract deployment. Set a value for the message variable using the `setMessage` function. Note down the contract address. Then, switch the MetaMask connection to the miner node URL (8546). In the ‘Deploy & Run Transaction’ section, input the contract address to access the previously deployed contract. Execute the `getMessage()` function and check the resulting output.
 
-Here is a video link to check the process: [Video](https://youtu.be/FZs1H-zjUkY)
+> [!TIP]
+> Refer to the accompanying [Video](https://youtu.be/FZs1H-zjUkY)
 
 ### Terminating the Node
 
