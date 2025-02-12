@@ -1,7 +1,7 @@
 {
   "github.copilot.chat.codeGeneration.instructions": [
-    { "text": "rephrase the content in a third-person perspective." },
-    { "file": "commit.md" }
+    { "file": "content.instruction.md" },
+    { "file": "commit.instruction.md" }
   ],
   "cSpell.words": [
     "Besu",
